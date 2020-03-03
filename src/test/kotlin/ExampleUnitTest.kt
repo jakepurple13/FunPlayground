@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import reddit.printr
 import utils.Colors
 import java.awt.Color
+import java.util.*
 import kotlin.random.Random
 
 fun mains() {
@@ -22,11 +23,11 @@ fun Int.valueOf(): Triple<Int, Int, Int> {
 
 private fun Random.nextColor() = Colors.RGB(nextInt(0, 255), nextInt(0, 255), nextInt(0, 255)).let { Color(it.r, it.g, it.b) }
 
-fun main() {
+/*fun main() {
     for (i in 0..100) {
         println(Random.nextColor())
     }
-}
+}*/
 
 fun mained() = runBlocking {
     val shows = RunPython.runPythonCodeAsync("showapistuff.py")
@@ -49,3 +50,27 @@ fun mained() = runBlocking {
 
 data class Shows(val shows: List<Show>)
 data class Show(val name: String?, val url: String?)
+
+fun main() {
+    number()
+}
+
+private fun untilInt(scanner: Scanner, print: () -> Unit = {}): Int {
+    var temp: Int?
+    do {
+        print()
+        temp = scanner.nextLine().toIntOrNull()
+    } while (temp == null)
+    return temp
+}
+
+fun number() {
+    val scan = Scanner(System.`in`)
+    val range = 1..20
+    val number = range.random()
+    println("I have a number between ${range.first} and ${range.last}")
+    do {
+        val guess = untilInt(scan) { println("Guess my number! ") }
+    } while (guess != number)
+    println("You got it! It was $number.")
+}

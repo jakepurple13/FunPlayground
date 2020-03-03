@@ -2,7 +2,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import java.awt.Color
-import java.util.*
 
 /**
  * converts [this] to a Json string

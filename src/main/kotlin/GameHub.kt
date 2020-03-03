@@ -7,6 +7,7 @@ import card_games.matching.MatchingGame
 import card_games.poker.PokerGame
 import card_games.war.WarGame
 import kotlinx.coroutines.runBlocking
+import other_games.NumberGuesser
 import reddit.RedditGame
 import reddit.RedditLevels
 
@@ -37,6 +38,8 @@ Help Screen
     -suit -> For ${Games.choices(Games.MATCHING)}. Choose a suit. Choices are ${Suit.values()
         .joinToString(", ", prefix = "[", postfix = "]") { it.name.toLowerCase() }}. Default is Spades.
     -jacks -> For ${Games.choices(Games.POKER)}. Play with pairs needing to be jacks or better. Default is false.
+    -start -> For ${Games.choices(Games.NUMBERGUESSER)}. Pick a starting number. Default is 1.
+    -end -> For ${Games.choices(Games.NUMBERGUESSER)}. Pick an ending number. Default is 20.
     -continuePlay -> For ${Games.choices(
         Games.POKER, Games.BLACKJACK
     )}. If you want to continue to play after the deck is empty. Default is false for poker, true for blackjack.
@@ -47,6 +50,7 @@ enum class Games {
     POKER,
     BLACKJACK,
     MATCHING,
+    NUMBERGUESSER,
     WAR,
     CHESS,
     REDDIT,
@@ -78,6 +82,7 @@ fun mainGame(vararg args: String) = runBlocking {
         Games.BLACKJACK -> BlackjackGame.blackjack(args.deckCount(), args.continuePlay(true))
         Games.MATCHING -> MatchingGame.playMatching(args.suit())
         Games.REDDIT -> RedditGame.pythonPlay(args.subreddit(), args.subLevel().name.toLowerCase())
+        Games.NUMBERGUESSER -> listOf(args.startNumber(), args.endNumber()).sorted().let { NumberGuesser.number(it.first(), it.last()) }
         Games.WAR -> WarGame.playWar()
         Games.HELP -> printHelpScreen()
     }
@@ -100,3 +105,10 @@ private fun toSuit(string: String) = try {
 //reddit functions
 fun Array<out String>.subreddit() = indexOf("-subreddit").let { if (it == -1) null else this[it + 1] } ?: "no sub"
 fun Array<out String>.subLevel() = RedditLevels(indexOf("-level").let { if (it == -1) "nope" else this[it + 1] })
+
+//other functions
+fun Array<out String>.startNumber() =
+    indexOf("-start").let { if (it == -1) null else this[it + 1].toIntOrNull() }?.let { if (it <= 0) null else it } ?: 1
+
+fun Array<out String>.endNumber() =
+    indexOf("-end").let { if (it == -1) null else this[it + 1].toIntOrNull() }?.let { if (it <= 0) null else it } ?: 20
